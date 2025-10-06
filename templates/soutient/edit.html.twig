@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Soutient{% endblock %}
+
+{% block body %}
+    <h1>Edit Soutient</h1>
+
+    {{ include('soutient/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_soutient_index') }}">back to list</a>
+
+    {{ include('soutient/_delete_form.html.twig') }}
+{% endblock %}

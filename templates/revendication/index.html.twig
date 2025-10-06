@@ -1,0 +1,229 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Revendications{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h3 mb-1">
+                            <i class="fas fa-bullhorn me-2"></i>
+                            Gestion des Revendications
+                        </h1>
+                        <p class="mb-0 opacity-75">Liste de toutes les revendications enregistrées</p>
+                    </div>
+                    <a href="{{ path('app_revendication_new') }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-plus me-1"></i>
+                        Nouvelle Revendication
+                    </a>
+                </div>
+                
+                <div class="card-body">
+                    {% if revendications is not empty %}
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="80">ID</th>
+                                    <th>Titre</th>
+                                    <th>Description</th>
+                                    <th width="160">Date de Création</th>
+                                    <th width="120">Statut</th>
+                                    <th width="150" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for revendication in revendications %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-secondary">#{{ revendication.id }}</span>
+                                    </td>
+                                    <td>
+                                        <strong class="text-primary">{{ revendication.titre }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted description-preview" 
+                                              data-bs-toggle="tooltip" 
+                                              title="{{ revendication.description }}">
+                                            {{ revendication.description|length > 80 ? revendication.description|slice(0, 80) ~ '...' : revendication.description }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            {{ revendication.dateCreation ? revendication.dateCreation|date('d/m/Y H:i') : 'N/A' }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% set status_class = {
+                                            'En attente': 'warning',
+                                            'Validé': 'success',
+                                            'Rejeté': 'danger',
+                                            'En cours': 'info'
+                                        } %}
+                                        <span class="badge bg-{{ status_class[revendication.statut] ?? 'secondary' }}">
+                                            {{ revendication.statut }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ path('app_revendication_show', {'id': revendication.id}) }}" 
+                                               class="btn btn-outline-info" 
+                                               data-bs-toggle="tooltip" 
+                                               title="Voir les détails">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_revendication_edit', {'id': revendication.id}) }}" 
+                                               class="btn btn-outline-warning" 
+                                               data-bs-toggle="tooltip" 
+                                               title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-bullhorn fa-4x text-muted mb-3"></i>
+                            <h3 class="text-muted">Aucune revendication trouvée</h3>
+                            <p class="text-muted mb-4">Commencez par créer votre première revendication.</p>
+                            <a href="{{ path('app_revendication_new') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus me-2"></i>
+                                Créer une revendication
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if revendications is not empty %}
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            <small>Total : <strong>{{ revendications|length }}</strong> revendication(s)</small>
+                        </div>
+                        <a href="{{ path('app_revendication_new') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>
+                            Ajouter une revendication
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.card-footer {
+    border-radius: 0 0 15px 15px !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.table th {
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05) !important;
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+.description-preview {
+    cursor: help;
+    display: inline-block;
+    max-width: 300px;
+}
+
+.badge {
+    font-size: 0.75em;
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+.btn-group .btn {
+    border-radius: 6px;
+    margin: 0 2px;
+}
+
+.empty-state {
+    padding: 3rem 1rem;
+}
+
+/* Animation pour les lignes du tableau */
+.table tbody tr {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .description-preview {
+        max-width: 150px;
+    }
+    
+    .card-header .d-flex {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .card-header .btn {
+        margin-top: 1rem;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser les tooltips Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

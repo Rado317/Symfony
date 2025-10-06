@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des catégories{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary fw-bold">📂 Liste des catégories</h1>
+        <a href="{{ path('app_categorie_new') }}" class="btn btn-success">
+            ➕ Ajouter une catégorie
+        </a>
+    </div>
+
+    {% if categories is empty %}
+        <div class="alert alert-warning text-center">
+            Aucune catégorie trouvée 😢
+        </div>
+    {% else %}
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Description</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for categorie in categories %}
+                        <tr>
+                            <td class="fw-bold">{{ categorie.id }}</td>
+                            <td>{{ categorie.nom }}</td>
+                            <td>{{ categorie.description }}</td>
+                            <td class="text-center">
+                                <a href="{{ path('app_categorie_show', {'id': categorie.id}) }}" class="btn btn-sm btn-info text-white me-2">
+                                    <i class="bi bi-eye"></i> Voir
+                                </a>
+                                <a href="{{ path('app_categorie_edit', {'id': categorie.id}) }}" class="btn btn-sm btn-warning text-white">
+                                    <i class="bi bi-pencil"></i> Modifier
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
